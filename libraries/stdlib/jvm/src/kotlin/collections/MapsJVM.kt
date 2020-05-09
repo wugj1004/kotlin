@@ -15,8 +15,6 @@ import java.util.SortedMap
 import java.util.TreeMap
 import java.util.concurrent.ConcurrentMap
 import kotlin.collections.builders.MapBuilder
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 
 /**
@@ -29,45 +27,19 @@ import kotlin.contracts.contract
  */
 public fun <K, V> mapOf(pair: Pair<K, V>): Map<K, V> = java.util.Collections.singletonMap(pair.first, pair.second)
 
-/**
- * Builds a new read-only [Map] by populating a [MutableMap] using the given [builderAction]
- * and returning a read-only map with the same key-value pairs.
- *
- * The map passed as a receiver to the [builderAction] is valid only inside that function.
- * Using it outside of the function produces an unspecified behavior.
- *
- * Entries of the map are iterated in the order they were added by the [builderAction].
- *
- * @sample samples.collections.Builders.Maps.buildMapSample
- */
+@PublishedApi
 @SinceKotlin("1.3")
 @ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
-public actual inline fun <K, V> buildMap(@BuilderInference builderAction: MutableMap<K, V>.() -> Unit): Map<K, V> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
+internal actual inline fun <K, V> buildMapInternal(@BuilderInference builderAction: MutableMap<K, V>.() -> Unit): Map<K, V> {
     return MapBuilder<K, V>().apply(builderAction).build()
 }
 
-/**
- * Builds a new read-only [Map] by populating a [MutableMap] using the given [builderAction]
- * and returning a read-only map with the same key-value pairs.
- *
- * The map passed as a receiver to the [builderAction] is valid only inside that function.
- * Using it outside of the function produces an unspecified behavior.
- *
- * [capacity] is used to hint the expected number of pairs added in the [builderAction].
- *
- * Entries of the map are iterated in the order they were added by the [builderAction].
- *
- * @throws IllegalArgumentException if the given [capacity] is negative.
- *
- * @sample samples.collections.Builders.Maps.buildMapSample
- */
+@PublishedApi
 @SinceKotlin("1.3")
 @ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
-public actual inline fun <K, V> buildMap(capacity: Int, @BuilderInference builderAction: MutableMap<K, V>.() -> Unit): Map<K, V> {
-    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
+internal actual inline fun <K, V> buildMapInternal(capacity: Int, @BuilderInference builderAction: MutableMap<K, V>.() -> Unit): Map<K, V> {
     return MapBuilder<K, V>(capacity).apply(builderAction).build()
 }
 

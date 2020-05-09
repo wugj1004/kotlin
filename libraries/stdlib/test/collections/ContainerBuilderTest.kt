@@ -64,7 +64,7 @@ class ContainerBuilderTest {
             add('c')
         }
 
-        var subList = mutableListOf<Char>()
+        val subList: MutableList<Char>
 
         val y = buildList<Char>(4) {
             add('a')

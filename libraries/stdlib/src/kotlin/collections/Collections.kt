@@ -166,7 +166,17 @@ public inline fun <T> MutableList(size: Int, init: (index: Int) -> T): MutableLi
  */
 @SinceKotlin("1.3")
 @ExperimentalStdlibApi
-public expect fun <E> buildList(@BuilderInference builderAction: MutableList<E>.() -> Unit): List<E>
+@kotlin.internal.InlineOnly
+public inline fun <E> buildList(@BuilderInference builderAction: MutableList<E>.() -> Unit): List<E> {
+    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
+    return buildListInternal(builderAction)
+}
+
+@PublishedApi
+@SinceKotlin("1.3")
+@ExperimentalStdlibApi
+@kotlin.internal.InlineOnly
+internal expect inline fun <E> buildListInternal(@BuilderInference builderAction: MutableList<E>.() -> Unit): List<E>
 
 /**
  * Builds a new read-only [List] by populating a [MutableList] using the given [builderAction]
@@ -183,8 +193,17 @@ public expect fun <E> buildList(@BuilderInference builderAction: MutableList<E>.
  */
 @SinceKotlin("1.3")
 @ExperimentalStdlibApi
-public expect fun <E> buildList(capacity: Int, @BuilderInference builderAction: MutableList<E>.() -> Unit): List<E>
+@kotlin.internal.InlineOnly
+public inline fun <E> buildList(capacity: Int, @BuilderInference builderAction: MutableList<E>.() -> Unit): List<E> {
+    contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
+    return buildListInternal(capacity, builderAction)
+}
 
+@PublishedApi
+@SinceKotlin("1.3")
+@ExperimentalStdlibApi
+@kotlin.internal.InlineOnly
+internal expect inline fun <E> buildListInternal(capacity: Int, @BuilderInference builderAction: MutableList<E>.() -> Unit): List<E>
 
 /**
  * Returns an [IntRange] of the valid indices for this collection.

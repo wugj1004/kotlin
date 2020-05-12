@@ -5,8 +5,8 @@
 /*
  * KOTLIN DIAGNOSTICS SPEC TEST (NEGATIVE)
  *
- * SPEC VERSION: 0.1-368
- * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 12 -> sentence 1
+ * SPEC VERSION: 0.1-387
+ * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 14 -> sentence 1
  * NUMBER: 1
  * DESCRIPTION: an overload ambiguity which must be reported if several candidates which are equally applicable for the call exests
  */

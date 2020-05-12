@@ -5,8 +5,11 @@
 /*
  * KOTLIN DIAGNOSTICS SPEC TEST (POSITIVE)
  *
- * SPEC VERSION: 0.1-366
- * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 9 -> sentence 8
+ * SPEC VERSION: 0.1-387
+ * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 11 -> sentence 5
+ * RELEVANT PLACES: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 3
+ * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 11 -> sentence 5
+ * built-in-types-and-their-semantics, built-in-integer-types-1, integer-type-widening -> paragraph 3 -> sentence 1
  * NUMBER: 1
  * DESCRIPTION: The candidate having any variable-argument parameters is less specific
  */

@@ -5,7 +5,7 @@
 /*
  * KOTLIN DIAGNOSTICS SPEC TEST (NEGATIVE)
  *
- * SPEC VERSION: 0.1-366
+ * SPEC VERSION: 0.1-387
  * PLACE:  overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, rationale-1 -> paragraph 3 -> sentence 1
  * NUMBER: 1
  * DESCRIPTION: If there are several functions with this property, none of them are the most specific and an overload resolution ambiguity error should be reported by the compiler

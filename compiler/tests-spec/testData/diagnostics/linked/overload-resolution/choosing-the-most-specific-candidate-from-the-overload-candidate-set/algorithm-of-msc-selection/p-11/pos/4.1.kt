@@ -5,10 +5,12 @@
 /*
  * KOTLIN DIAGNOSTICS SPEC TEST (POSITIVE)
  *
- * SPEC VERSION: 0.1-366
- * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 9 -> sentence 7
+ * SPEC VERSION: 0.1-387
+ * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 11 -> sentence 4
  * RELEVANT PLACES: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 1
- * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 2
+ * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 3
+ * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 11 -> sentence 4
+ * built-in-types-and-their-semantics, built-in-integer-types-1, integer-type-widening -> paragraph 3 -> sentence 1
  * NUMBER: 1
  * DESCRIPTION: call with explicit receiver: different built-in integer types and one of them is kotlin.Int
  */
@@ -106,16 +108,4 @@ fun case4(case: Case4) {
     <!DEBUG_INFO_CALL("fqName: Case4.get; typeCall: operator function")!>case[1]<!>
     //(1.1) return type is String
     <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>case[1]<!>
-}
-
-// TESTCASE NUMBER: 5
-class Case5 {
-    fun <T> List<T>.foo(x: T, y: Int = 1, z: Int = 1)  : Unit =TODO()
-
-    fun <T> List<T>.foo(x: T, y: Int = 1) : String =TODO()
-
-    fun case(list: List<Int>) {
-        list.<!DEBUG_INFO_CALL("fqName: Case5.foo; typeCall: extension function")!>foo(1)<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>list.foo(1)<!>
-    }
 }

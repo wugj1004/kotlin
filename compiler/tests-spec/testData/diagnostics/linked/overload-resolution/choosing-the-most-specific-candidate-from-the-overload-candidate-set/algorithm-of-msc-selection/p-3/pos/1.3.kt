@@ -5,9 +5,10 @@
 /*
  * KOTLIN DIAGNOSTICS SPEC TEST (POSITIVE)
  *
- * SPEC VERSION: 0.1-366
- * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 11 -> sentence 2
- * NUMBER: 1
+ * SPEC VERSION: 0.1-387
+ * PLACE: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 1
+ * RELEVANT PLACES: built-in-types-and-their-semantics, built-in-integer-types-1, integer-type-widening -> paragraph 3 -> sentence 2
+ * NUMBER: 3
  * DESCRIPTION: prefer kotlin.Short to kotlin.Byte.
  */
 

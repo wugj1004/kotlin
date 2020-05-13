@@ -173,3 +173,21 @@ fun testcase11(case: Case11) {
     case.<!DEBUG_INFO_CALL("fqName: Case11.xoo; typeCall: function")!>xoo(1, 1)<!>
     <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>case.xoo(1, 1)<!>
 }
+
+// TESTCASE NUMBER: 12
+
+class Case12() : I12 {
+    operator fun invoke(x: Short): Unit = print(3) // (1)
+    companion object {
+        operator fun invoke(x: Int): Unit = print(3) // (2)
+    }
+
+    fun case() {
+        <!DEBUG_INFO_CALL("fqName: Case12.invoke; typeCall: operator function")!>invoke(1)<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>invoke(1)<!>
+    }
+}
+
+interface I12 {
+    operator fun invoke(x: Int): String = "print(3)" // (3)
+}

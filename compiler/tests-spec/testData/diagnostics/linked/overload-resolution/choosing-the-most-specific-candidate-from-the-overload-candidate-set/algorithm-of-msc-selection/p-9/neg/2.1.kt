@@ -9,7 +9,7 @@
  * PLACE:overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 9 -> sentence 2
  * RELEVANT PLACES: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 7 -> sentence 2
  * NUMBER: 1
- * DESCRIPTION: call with explicit receiver: different built-in integer types and both of them are kotlin.Int
+ * DESCRIPTION: Neither of the two candidates is more applicable than the other and both are non-parameterized
  */
 // TESTCASE NUMBER: 1
 class A : B, C

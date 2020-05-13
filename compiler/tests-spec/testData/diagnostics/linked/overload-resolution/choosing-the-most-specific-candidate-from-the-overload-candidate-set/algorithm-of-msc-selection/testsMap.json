@@ -38,7 +38,7 @@
         {
           "specVersion": "0.1-387",
           "casesNumber": 1,
-          "description": "call with explicit receiver: different built-in integer types and both of them are kotlin.Int",
+          "description": "Neither of the two candidates is more applicable than the other and both are non-parameterized",
           "path": "compiler/tests-spec/testData/diagnostics/linked/overload-resolution/choosing-the-most-specific-candidate-from-the-overload-candidate-set/algorithm-of-msc-selection/p-9/neg/2.1.kt",
           "unexpectedBehaviour": false
         }
@@ -49,7 +49,7 @@
         {
           "specVersion": "0.1-387",
           "casesNumber": 2,
-          "description": "call with explicit receiver: different built-in integer types and both of them are kotlin.Int",
+          "description": "Neither of the two candidates is more applicable than the other and one is non-parameterized",
           "path": "compiler/tests-spec/testData/diagnostics/linked/overload-resolution/choosing-the-most-specific-candidate-from-the-overload-candidate-set/algorithm-of-msc-selection/p-9/pos/1.1.kt",
           "unexpectedBehaviour": false
         },
@@ -379,7 +379,7 @@
         {
           "specVersion": "0.1-387",
           "casesNumber": 1,
-          "description": "call with explicit receiver: different built-in integer types and both of them are kotlin.Int",
+          "description": "Neither of the two candidates is more applicable than the other and both are non-parameterized",
           "unexpectedBehaviour": false
         }
       ]
@@ -389,7 +389,7 @@
         {
           "specVersion": "0.1-387",
           "casesNumber": 2,
-          "description": "call with explicit receiver: different built-in integer types and both of them are kotlin.Int",
+          "description": "Neither of the two candidates is more applicable than the other and one is non-parameterized",
           "unexpectedBehaviour": false
         }
       ]

@@ -23,3 +23,4 @@ class Case1 {
         <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>this.boo(1, 1)<!>
     }
 }
+

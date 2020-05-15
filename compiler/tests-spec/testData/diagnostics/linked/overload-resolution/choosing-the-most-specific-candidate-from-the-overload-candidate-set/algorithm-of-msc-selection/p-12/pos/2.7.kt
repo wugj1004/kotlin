@@ -10,8 +10,10 @@
  * RELEVANT PLACES: overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 1
  * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 3 -> sentence 3
  * built-in-types-and-their-semantics, built-in-integer-types-1, integer-type-widening -> paragraph 3 -> sentence 1
+ * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 17 -> sentence 1
+ * overload-resolution, choosing-the-most-specific-candidate-from-the-overload-candidate-set, algorithm-of-msc-selection -> paragraph 17 -> sentence 3
  * NUMBER: 7
- * DESCRIPTION: call with explicit receiver: different built-in integer types and one of them is kotlin.Int
+ * DESCRIPTION: different built-in integer types and one of them is kotlin.Int
  */
 
 
@@ -39,5 +41,24 @@ interface I1{
     companion object  {
         operator fun invoke(x: Int): String = "print(3)" // (3)
     }
+}
+
+// FILE: TestCase2.kt
+// TESTCASE NUMBER: 2
+
+class Case2() : I3 {
+    operator fun invoke(x: Short): Unit = print(3) // (1)
+    companion object {
+        operator fun invoke(x: Int): Unit = print(3) // (2)
+    }
+
+    fun case() {
+        <!DEBUG_INFO_CALL("fqName: Case2.invoke; typeCall: operator function")!>invoke(1)<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>invoke(1)<!>
+    }
+}
+
+interface I3 {
+    operator fun invoke(x: Int): String = "print(3)" // (3)
 }
 

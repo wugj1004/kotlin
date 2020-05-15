@@ -4,7 +4,7 @@
       "1": [
         {
           "specVersion": "0.1-387",
-          "casesNumber": 12,
+          "casesNumber": 11,
           "description": "call with explicit receiver: different built-in integer types and one of them is kotlin.Int",
           "path": "compiler/tests-spec/testData/diagnostics/linked/overload-resolution/choosing-the-most-specific-candidate-from-the-overload-candidate-set/algorithm-of-msc-selection/p-12/pos/2.1.kt",
           "unexpectedBehaviour": false
@@ -25,8 +25,8 @@
         },
         {
           "specVersion": "0.1-387",
-          "casesNumber": 1,
-          "description": "call with explicit receiver: different built-in integer types and one of them is kotlin.Int",
+          "casesNumber": 2,
+          "description": "different built-in integer types and one of them is kotlin.Int",
           "path": "compiler/tests-spec/testData/diagnostics/linked/overload-resolution/choosing-the-most-specific-candidate-from-the-overload-candidate-set/algorithm-of-msc-selection/p-12/pos/2.7.kt",
           "unexpectedBehaviour": false
         },

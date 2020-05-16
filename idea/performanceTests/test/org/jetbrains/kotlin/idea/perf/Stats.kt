@@ -245,7 +245,14 @@ class Stats(
 
     private fun <SV, TV> mainPhase(phaseData: PhaseData<SV, TV>): Array<StatInfos> {
         val statInfosArray = phase(phaseData, "")
-        statInfosArray.filterNotNull().map { it[ERROR_KEY] as? Throwable }.firstOrNull()?.let { throw it }
+        statInfosArray.filterNotNull().map { it[ERROR_KEY] as? Throwable }.firstOrNull()?.let {
+            printTimings(
+                phaseData.testName,
+                printOnlyErrors = true,
+                statInfoArray = statInfosArray
+            )
+            throw it
+        }
         return statInfosArray
     }
 

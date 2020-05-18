@@ -15,6 +15,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.gradle.util.GradleVersion
+import org.jetbrains.kotlin.idea.scripting.gradle.roots.GradleBuildRoot
+import org.jetbrains.kotlin.idea.scripting.gradle.roots.GradleBuildRootsManager
 import org.jetbrains.kotlin.idea.util.application.runReadAction
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtFile
@@ -24,26 +26,10 @@ import org.jetbrains.plugins.gradle.settings.GradleLocalSettings
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import java.util.*
 
 private val sections = arrayListOf("buildscript", "plugins", "initscript", "pluginManagement")
 
 fun isGradleKotlinScript(virtualFile: VirtualFile) = virtualFile.name.endsWith(".gradle.kts")
-
-fun isInAffectedGradleProjectFiles(project: Project, filePath: String): Boolean {
-    if (filePath.endsWith("/gradle.properties")) return true
-    if (filePath.endsWith("/gradle-wrapper.properties")) return true
-
-    if (filePath.endsWith(".gradle") || filePath.endsWith(".gradle.kts")) {
-        if (ApplicationManager.getApplication().isUnitTestModeWithoutAffectedGradleProjectFilesCheck) {
-            return true
-        }
-
-        return filePath.substringBeforeLast("/") in project.service<GradleScriptInputsWatcher>().getGradleProjectsRoots()
-    }
-
-    return false
-}
 
 fun getGradleScriptInputsStamp(
     project: Project,
@@ -81,7 +67,8 @@ fun getGradleScriptInputsStamp(
                     }
                 }
 
-            GradleKotlinScriptConfigurationInputs(result.toString(), givenTimeStamp)
+            val buildRoot = GradleBuildRootsManager.getInstance(project).findScriptBuildRoot(file)?.root as? GradleBuildRoot.Linked
+            GradleKotlinScriptConfigurationInputs(result.toString(), givenTimeStamp, buildRoot?.pathPrefix)
         } else null
     }
 }
@@ -103,46 +90,8 @@ fun getGradleVersion(project: Project, settings: GradleProjectSettings): String 
     return settings.resolveGradleVersion().version
 }
 
-fun getGradleProjectSettings(project: Project): Collection<GradleProjectSettings> {
-    val gradleSettings = ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID) as GradleSettings
-    return gradleSettings.getLinkedProjectsSettings()
-}
-
-class RootsIndex<T : Any> {
-    internal val tree = TreeMap<String, T>()
-    var values: Collection<T> = listOf()
-        internal set
-
-    fun findRoot(path: String): T? {
-        // race condition can be ignored
-        val values = values
-        val size = values.size
-        if (size == 0) return null
-        if (size == 1) return values.single() // we can omit prefix check
-        return tree.floorEntry(path).takeIf { path.startsWith(it.key) }?.value
-    }
-
-    internal inline fun update(updater: (insert: (prefix: String, value: T) -> Unit) -> Unit) {
-        synchronized(this) {
-            updater { prefix, value -> tree[prefix] = value }
-            values = tree.values
-        }
-    }
-
-    @Synchronized
-    operator fun set(prefix: String, value: T) {
-        val moreCommon = tree.lowerKey(prefix)
-        check(moreCommon == null || !prefix.startsWith(moreCommon)) {
-            "Cannot add root `${prefix}`. More common root already added: `$moreCommon`"
-        }
-
-        tree[prefix] = value
-        values = tree.values
-    }
-
-    @Synchronized
-    fun remove(prefix: String) = tree.remove(prefix)
-}
+fun getGradleProjectSettings(project: Project): Collection<GradleProjectSettings> =
+    (ExternalSystemApiUtil.getSettings(project, GradleConstants.SYSTEM_ID) as GradleSettings).linkedProjectsSettings
 
 private val logger = Logger.getInstance("#org.jetbrains.kotlin.idea.scripting.gradle")
 

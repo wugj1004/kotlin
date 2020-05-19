@@ -45,7 +45,7 @@ public actual open class LinkedHashSet<E> : HashSet<E>, MutableSet<E> {
 
     @PublishedApi
     internal fun build(): Set<E> {
-        map.unsafeCast<LinkedHashMap<E, Any>>().build()
+        (map as LinkedHashMap<E, Any>).build()
         return this
     }
 

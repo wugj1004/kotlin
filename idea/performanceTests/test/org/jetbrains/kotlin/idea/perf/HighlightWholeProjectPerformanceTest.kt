@@ -56,27 +56,32 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
             val projectName = projectSpec.name
             val projectPath = projectSpec.path
 
-            logMessage { "going to open project '$projectName' at $projectPath" }
-
             val suiteName = "$projectName project"
-            tcSuite(suiteName) {
-                val stats = Stats(suiteName)
-                stats.use { stat ->
-                    perfGradleBasedProject(projectName, projectPath, stat)
-                    //perfJpsBasedProject(projectName, stat)
+            try {
+                tcSuite(suiteName) {
+                    val stats = Stats(suiteName)
+                    stats.use { stat ->
+                        perfGradleBasedProject(projectName, projectPath, stat)
+                        //perfJpsBasedProject(projectName, stat)
 
-                    val project = myProject!!
-                    project.projectFilePath
-                    val projectDir = File(projectPath)
-                    val ktFiles = projectDir.allFilesWithExtension("kt").toList()
-                    printStatValue("$suiteName: number of kt files", ktFiles.size)
-                    ktFiles.forEach { file ->
-                        val path = file.path
-                        val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
-                        logMessage { "going to highlight $localPath" }
-                        perfHighlightFile(localPath, stats = stat)
+                        val project = myProject!!
+                        project.projectFilePath
+                        val projectDir = File(projectPath)
+                        val ktFiles = projectDir.allFilesWithExtension("kt").toList()
+                        printStatValue("$suiteName: number of kt files", ktFiles.size)
+                        ktFiles.forEach { file ->
+                            val path = file.path
+                            val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
+                            try {
+                                perfHighlightFile(localPath, stats = stat)
+                            } catch (e: Throwable) {
+                                // nothing as it is already caught by perfTest
+                            }
+                        }
                     }
                 }
+            } catch (e: Throwable) {
+                // don't fail entire test on a single failure
             }
         }
     }

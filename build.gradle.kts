@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.crypto.checksum.Checksum
 import org.gradle.plugins.ide.idea.model.IdeaModel
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
@@ -42,6 +43,7 @@ plugins {
     idea
     id("jps-compatible")
     id("org.jetbrains.gradle.plugin.idea-ext")
+    id("org.gradle.crypto.checksum") version "1.2.0"
 }
 
 pill {
@@ -774,7 +776,7 @@ fun CopySpec.setExecutablePermissions() {
     filesMatching("**/bin/*.bat") { mode = 0b110100100 }
 }
 
-val zipCompiler by task<Zip> {
+val zipCompilerRaw by task<Zip> {
     dependsOn(dist)
     destinationDir = file(distDir)
     archiveName = "kotlin-compiler-$kotlinVersion.zip"
@@ -786,6 +788,14 @@ val zipCompiler by task<Zip> {
     doLast {
         logger.lifecycle("Compiler artifacts packed to $archivePath")
     }
+}
+
+val zipCompiler by task<Checksum> {
+    dependsOn(zipCompilerRaw)
+    val compilerFile = zipCompilerRaw.get().outputs.files.singleFile
+    files = files(compilerFile)
+    outputDir = compilerFile.parentFile
+    algorithm = Checksum.Algorithm.SHA256
 }
 
 val zipStdlibTests by task<Zip> {

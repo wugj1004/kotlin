@@ -5,7 +5,6 @@
 
 package kotlin.collections.builders
 
-@PublishedApi
 internal class MapBuilder<K, V> private constructor(
     private var keysArray: Array<K>,
     private var valuesArray: Array<V>?, // allocated only when actually used, always null in pure HashSet

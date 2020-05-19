@@ -5,7 +5,6 @@
 
 package kotlin.collections.builders
 
-@PublishedApi
 internal class ListBuilder<E> private constructor(
     private var array: Array<E>,
     private var offset: Int,

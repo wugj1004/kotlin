@@ -23,7 +23,7 @@ public fun <T> setOf(element: T): Set<T> = java.util.Collections.singleton(eleme
 @ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 internal actual inline fun <E> buildSetInternal(@BuilderInference builderAction: MutableSet<E>.() -> Unit): Set<E> {
-    return SetBuilder<E>().apply(builderAction).build()
+    return build(createSetBuilder<E>().apply(builderAction))
 }
 
 @PublishedApi
@@ -31,7 +31,28 @@ internal actual inline fun <E> buildSetInternal(@BuilderInference builderAction:
 @ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 internal actual inline fun <E> buildSetInternal(capacity: Int, @BuilderInference builderAction: MutableSet<E>.() -> Unit): Set<E> {
-    return SetBuilder<E>(capacity).apply(builderAction).build()
+    return build(createSetBuilder<E>(capacity).apply(builderAction))
+}
+
+@PublishedApi
+@SinceKotlin("1.3")
+@ExperimentalStdlibApi
+internal fun <E> createSetBuilder(): MutableSet<E> {
+    return SetBuilder()
+}
+
+@PublishedApi
+@SinceKotlin("1.3")
+@ExperimentalStdlibApi
+internal fun <E> createSetBuilder(capacity: Int): MutableSet<E> {
+    return SetBuilder(capacity)
+}
+
+@PublishedApi
+@SinceKotlin("1.3")
+@ExperimentalStdlibApi
+internal fun <E> build(builder: MutableSet<E>): Set<E> {
+    return (builder as SetBuilder<E>).build()
 }
 
 

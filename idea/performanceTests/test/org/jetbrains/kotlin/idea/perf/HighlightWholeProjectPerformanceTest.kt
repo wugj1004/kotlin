@@ -73,7 +73,15 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                             val path = file.path
                             val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
                             try {
-                                perfHighlightFile(localPath, stats = stat)
+                                // 1x3 it not good enough for statistics, but at least it gives some overview
+                                perfHighlightFile(
+                                    project(),
+                                    fileName = localPath,
+                                    stats = stat,
+                                    warmUpIterations = 1,
+                                    iterations = 3,
+                                    checkStability = false
+                                )
                             } catch (e: Throwable) {
                                 // nothing as it is already caught by perfTest
                             }

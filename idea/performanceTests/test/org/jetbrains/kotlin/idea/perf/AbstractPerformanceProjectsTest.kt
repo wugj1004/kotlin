@@ -691,12 +691,15 @@ abstract class AbstractPerformanceProjectsTest : UsefulTestCase() {
     protected fun perfHighlightFileEmptyProfile(name: String, stats: Stats): List<HighlightInfo> =
         perfHighlightFile(project(), name, stats, tools = emptyArray(), note = "empty profile")
 
-    private fun perfHighlightFile(
+    protected fun perfHighlightFile(
         project: Project,
         fileName: String,
         stats: Stats,
         tools: Array<InspectionProfileEntry>? = null,
-        note: String = ""
+        note: String = "",
+        warmUpIterations: Int = 3,
+        iterations: Int = 10,
+        checkStability: Boolean = true
     ): List<HighlightInfo> {
         val profileManager = ProjectInspectionProfileManager.getInstance(project)
         val currentProfile = profileManager.currentProfile
@@ -710,8 +713,9 @@ abstract class AbstractPerformanceProjectsTest : UsefulTestCase() {
                 performanceTest<EditorFile, List<HighlightInfo>> {
                     name("highlighting ${notePrefix(note)}${simpleFilename(fileName)}")
                     stats(stats)
-                    warmUpIterations(if (isWarmUp) 1 else 3)
-                    iterations(if (isWarmUp) 2 else 10)
+                    warmUpIterations(if (isWarmUp) 1 else warmUpIterations)
+                    iterations(if (isWarmUp) 2 else iterations)
+                    checkStability(checkStability)
                     setUp {
                         it.setUpValue = openFileInEditor(project, fileName)
                     }

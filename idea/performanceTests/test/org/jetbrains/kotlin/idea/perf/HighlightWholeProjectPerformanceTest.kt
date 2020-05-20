@@ -7,7 +7,6 @@ package org.jetbrains.kotlin.idea.perf
 
 import com.intellij.openapi.module.impl.ProjectLoadingErrorsHeadlessNotifier
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.printStatValue
-import org.jetbrains.kotlin.idea.perf.Stats.Companion.printTestMetadata
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.tcSuite
 import org.jetbrains.kotlin.idea.testFramework.ProjectOpenAction
 import org.jetbrains.kotlin.idea.testFramework.logMessage
@@ -70,33 +69,23 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         val projectDir = File(projectPath)
                         val ktFiles = projectDir.allFilesWithExtension("kt").toList()
                         printStatValue("$suiteName: number of kt files", ktFiles.size)
-                        val sortedBySize = ktFiles
-                            .filter { it.length() > 0 }
-                            .map { it to it.length() }.sortedBy { it.second }
-                        val tenPercentOfFiles = sortedBySize.size / 10
-
-                        val top10Files = sortedBySize.take(tenPercentOfFiles).map { it.first }
-                        val mid10Files =
-                            sortedBySize.take(sortedBySize.size / 2 + tenPercentOfFiles / 2).takeLast(tenPercentOfFiles).map { it.first }
-                        val last10Files = sortedBySize.takeLast(tenPercentOfFiles).map { it.first }
-
-                        val topMidLastFiles = LinkedHashSet(top10Files + mid10Files + last10Files)
+                        val topMidLastFiles =
+                            limitedFiles(ktFiles, 10).map {
+                                val path = it.path
+                                it to path.substring(path.indexOf(projectPath) + projectPath.length + 1)
+                            }
                         printStatValue("$suiteName: limited number of kt files", topMidLastFiles.size)
 
-                        topMidLastFiles.forEach { file ->
-                            val path = file.path
-                            val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
-                            printTestMetadata("$suiteName: $localPath", "fileSize", file.length())
+                        topMidLastFiles.forEach {
+                            logMessage { "${it.second} fileSize: ${it.first.length()}" }
                         }
 
                         topMidLastFiles.forEach { file ->
-                            val path = file.path
-                            val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
                             try {
                                 // 1x3 it not good enough for statistics, but at least it gives some overview
                                 perfHighlightFile(
                                     project(),
-                                    fileName = localPath,
+                                    fileName = file.second,
                                     stats = stat,
                                     warmUpIterations = 1,
                                     iterations = 3,
@@ -113,6 +102,20 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                 // don't fail entire test on a single failure
             }
         }
+    }
+
+    private fun limitedFiles(ktFiles: List<File>, partPercent: Int): Collection<File> {
+        val sortedBySize = ktFiles
+            .filter { it.length() > 0 }
+            .map { it to it.length() }.sortedByDescending { it.second }
+        val percentOfFiles = (sortedBySize.size * partPercent) / 100
+
+        val topFiles = sortedBySize.take(percentOfFiles).map { it.first }
+        val midFiles =
+            sortedBySize.take(sortedBySize.size / 2 + percentOfFiles / 2).takeLast(percentOfFiles).map { it.first }
+        val lastFiles = sortedBySize.takeLast(percentOfFiles).map { it.first }
+
+        return LinkedHashSet(topFiles + midFiles + lastFiles)
     }
 
     private fun perfGradleBasedProject(name: String, path: String, stats: Stats) {

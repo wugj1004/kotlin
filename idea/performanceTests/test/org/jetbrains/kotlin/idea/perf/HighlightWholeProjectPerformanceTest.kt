@@ -69,8 +69,18 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         val projectDir = File(projectPath)
                         val ktFiles = projectDir.allFilesWithExtension("kt").toList()
                         printStatValue("$suiteName: number of kt files", ktFiles.size)
-                        ktFiles.forEach { file ->
-                            val path = file.path
+                        val sortedBySize = ktFiles.map { it.path to it.length() }.sortedBy { it.second }
+                        val tenPercentOfFiles = sortedBySize.size / 10
+
+                        val top10Files = sortedBySize.take(tenPercentOfFiles).map { it.first }
+                        val mid10Files =
+                            sortedBySize.take(sortedBySize.size / 2 + tenPercentOfFiles / 2).takeLast(tenPercentOfFiles).map { it.first }
+                        val last10Files = sortedBySize.takeLast(tenPercentOfFiles).map { it.first }
+
+                        val topMidLastFiles = LinkedHashSet(top10Files + mid10Files + last10Files)
+                        printStatValue("$suiteName: limited number of kt files", topMidLastFiles.size)
+
+                        topMidLastFiles.forEach { path ->
                             val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
                             try {
                                 // 1x3 it not good enough for statistics, but at least it gives some overview

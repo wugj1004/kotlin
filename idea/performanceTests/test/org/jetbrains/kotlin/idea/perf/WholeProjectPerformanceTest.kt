@@ -30,6 +30,7 @@ import com.intellij.xml.XmlSchemaProvider
 import org.jetbrains.kotlin.idea.framework.KotlinSdkType
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.tcSuite
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.tcTest
+import org.jetbrains.kotlin.idea.test.PluginTestCaseBase
 import org.jetbrains.kotlin.idea.util.getProjectJdkTableSafe
 import java.io.File
 
@@ -53,11 +54,10 @@ abstract class WholeProjectPerformanceTest : DaemonAnalyzerTestCase(), WholeProj
                 jdkTableImpl.internalJdk.homePath!!
             }
 
-            val javaSdk = JavaSdk.getInstance()
-            val j8 = javaSdk.createJdk("1.8", homePath)
-
-            val jdkTable = getProjectJdkTableSafe()
-            jdkTable.addJdk(j8, testRootDisposable)
+            PluginTestCaseBase.addJdk(testRootDisposable) {
+                val javaSdk = JavaSdk.getInstance()
+                javaSdk.createJdk("1.8", homePath)
+            }
             KotlinSdkType.setUpIfNeeded()
         }
 

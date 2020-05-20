@@ -33,6 +33,7 @@ import org.jetbrains.kotlin.idea.framework.CommonLibraryKind
 import org.jetbrains.kotlin.idea.framework.JSLibraryKind
 import org.jetbrains.kotlin.idea.framework.KotlinSdkType
 import org.jetbrains.kotlin.idea.project.languageVersionSettings
+import org.jetbrains.kotlin.idea.test.PluginTestCaseBase
 import org.jetbrains.kotlin.idea.util.getProjectJdkTableSafe
 import org.jetbrains.kotlin.platform.CommonPlatforms
 import org.jetbrains.kotlin.platform.TargetPlatform
@@ -2528,8 +2529,10 @@ class KotlinMavenImporterTest : MavenImportingTestCase() {
     fun testJDKImport() {
         object : WriteAction<Unit>() {
             override fun run(result: Result<Unit>) {
-                val jdk = JavaSdk.getInstance().createJdk("myJDK", "my/path/to/jdk")
-                getProjectJdkTableSafe().addJdk(jdk)
+                PluginTestCaseBase.addJdk(testRootDisposable) {
+                    JavaSdk.getInstance().createJdk("myJDK", "my/path/to/jdk")
+                }
+
             }
         }.execute()
 

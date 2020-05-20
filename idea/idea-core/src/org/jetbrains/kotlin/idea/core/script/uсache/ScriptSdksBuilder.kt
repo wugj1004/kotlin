@@ -14,6 +14,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import org.jetbrains.kotlin.idea.caches.project.getAllProjectSdks
 import org.jetbrains.kotlin.idea.core.script.LOG
 import org.jetbrains.kotlin.idea.core.script.configuration.utils.ScriptClassRootsStorage
+import org.jetbrains.kotlin.idea.core.script.debug
 import org.jetbrains.kotlin.idea.util.getProjectJdkTableSafe
 import java.io.File
 
@@ -26,6 +27,13 @@ class ScriptSdksBuilder(
 
     init {
         sdks[null] = defaultSdk
+
+        val allJdks = getProjectJdkTableSafe().allJdks
+        if (allJdks.toSet().size < allJdks.size) {
+            assert(false) {
+                "Some sdks are duplicated in ProjectSdkTable: " + allJdks.joinToString { "${it.name} ${it.homePath}" }
+            }
+        }
     }
 
     fun build() = ScriptSdks(project, sdks)

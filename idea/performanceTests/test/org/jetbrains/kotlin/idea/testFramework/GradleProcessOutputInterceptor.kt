@@ -45,7 +45,7 @@ private class GradleProcessOutputInterceptorImpl : GradleProcessOutputIntercepto
 
     override fun onTaskOutput(id: ExternalSystemTaskId, text: String, stdOut: Boolean) {
         if (id.projectSystemId == GRADLE_SYSTEM_ID && text.isNotEmpty()) {
-            print("#gradle $text")
+            gradleMessage { text }
             buffer.append(text)
         }
     }

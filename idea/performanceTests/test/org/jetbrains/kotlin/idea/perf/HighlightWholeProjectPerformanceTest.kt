@@ -80,7 +80,8 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                             logMessage { "${it.second} fileSize: ${it.first.length()}" }
                         }
 
-                        topMidLastFiles.forEach { file ->
+                        topMidLastFiles.forEachIndexed { idx, file ->
+                            logMessage { "$idx / ${topMidLastFiles.size} : ${file.second} fileSize: ${file.first.length()}" }
                             try {
                                 // 1x3 it not good enough for statistics, but at least it gives some overview
                                 perfHighlightFile(

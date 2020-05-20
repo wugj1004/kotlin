@@ -69,7 +69,9 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         val projectDir = File(projectPath)
                         val ktFiles = projectDir.allFilesWithExtension("kt").toList()
                         printStatValue("$suiteName: number of kt files", ktFiles.size)
-                        val sortedBySize = ktFiles.map { it.path to it.length() }.sortedBy { it.second }
+                        val sortedBySize = ktFiles
+                            .filter { it.length() > 0 }
+                            .map { it.path to it.length() }.sortedBy { it.second }
                         val tenPercentOfFiles = sortedBySize.size / 10
 
                         val top10Files = sortedBySize.take(tenPercentOfFiles).map { it.first }

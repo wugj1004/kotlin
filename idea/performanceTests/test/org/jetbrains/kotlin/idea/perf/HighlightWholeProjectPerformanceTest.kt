@@ -71,7 +71,6 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         printStatValue("$suiteName: number of kt files", ktFiles.size)
                         val topMidLastFiles =
                             limitedFiles(ktFiles, 10)
-                                .take(10)
                                 .map {
                                     val path = it.path
                                     it to path.substring(path.indexOf(projectPath) + projectPath.length + 1)

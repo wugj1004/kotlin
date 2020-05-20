@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.GranularMetadataTransformation
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution
+import org.jetbrains.kotlin.gradle.plugin.whenEvaluatedAndVariantsConfigured
 import org.jetbrains.kotlin.gradle.utils.*
 import java.io.File
 import java.lang.reflect.Constructor
@@ -87,7 +88,9 @@ class DefaultKotlinSourceSet(
         // Fail-fast approach: check on each new added edge and report a circular dependency at once when the edge is added.
         checkForCircularDependencies()
 
-        project.afterEvaluate { defaultSourceSetLanguageSettingsChecker.runAllChecks(this, other) }
+        project.whenEvaluatedAndVariantsConfigured {
+            defaultSourceSetLanguageSettingsChecker.runAllChecks(this@DefaultKotlinSourceSet, other)
+        }
     }
 
     private val dependsOnSourceSetsImpl = mutableSetOf<KotlinSourceSet>()

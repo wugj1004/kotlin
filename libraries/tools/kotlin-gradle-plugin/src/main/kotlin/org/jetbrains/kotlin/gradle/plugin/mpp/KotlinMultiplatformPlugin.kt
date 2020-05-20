@@ -17,7 +17,6 @@ import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.internal.publication.MavenPublicationInternal
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.jvm.tasks.Jar
 import org.gradle.util.ConfigureUtil
@@ -193,9 +192,11 @@ class KotlinMultiplatformPlugin(
                 .withType(AbstractKotlinTarget::class.java).matching { it.publishable && it.name != METADATA_TARGET_NAME }
                 .all {
                     if (it is KotlinAndroidTarget || it is KotlinMetadataTarget)
-                    // Android targets have their variants created in afterEvaluate; TODO handle this better?
+                    // Android targets have their variants created in afterEvaluate;
                     // Kotlin Metadata targets rely on complete source sets hierearchy and cannot be inspected for publication earlier
-                        project.whenEvaluated { it.createMavenPublications(publishing.publications) }
+                        project.whenEvaluatedAndVariantsConfigured {
+                            it.createMavenPublications(publishing.publications)
+                        }
                     else
                         it.createMavenPublications(publishing.publications)
                 }

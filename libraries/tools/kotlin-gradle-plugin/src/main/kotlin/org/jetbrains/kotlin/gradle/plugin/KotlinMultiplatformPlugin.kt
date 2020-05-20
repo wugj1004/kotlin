@@ -214,6 +214,26 @@ internal fun <T> Project.whenEvaluated(fn: Project.() -> T) {
     }
 }
 
+internal fun <T> Project.whenEvaluatedAndVariantsConfigured(fn: Project.() -> T) =
+    whenEvaluatedAfterPlugins(AbstractAndroidProjectHandler.androidPluginIds, fn)
+
+/** Executes [fn] in afterEvaluate phase, but after all other afterEvaluate-actions added by any of the [plugins]. */
+private fun <T> Project.whenEvaluatedAfterPlugins(plugins: List<String>, fn: Project.() -> T) {
+    if (state.executed) {
+        error("Can't wait for a plugin to be applied when already in afterEvaluate")
+    } else {
+        var pluginsFound = 0
+        whenEvaluated { if (pluginsFound == 0) fn(project) }
+        for (pluginId in plugins) {
+            project.pluginManager.withPlugin(pluginId) {
+                pluginsFound++
+                val pluginsFoundNow = pluginsFound
+                whenEvaluated { if (pluginsFoundNow == pluginsFound) fn(project) }
+            }
+        }
+    }
+}
+
 open class KotlinPlatformAndroidPlugin : KotlinPlatformImplementationPluginBase("android") {
     override fun apply(project: Project) {
         project.applyPlugin<KotlinAndroidPluginWrapper>()

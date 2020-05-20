@@ -163,7 +163,7 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
     }
 
     private fun setupDependencyTransformationForCommonSourceSets(target: KotlinMetadataTarget) {
-        target.project.whenEvaluated {
+        target.project.whenEvaluatedAndVariantsConfigured {
             val publishedCommonSourceSets: Set<KotlinSourceSet> = getPublishedCommonSourceSets(project)
 
             kotlinExtension.sourceSets.all {
@@ -175,7 +175,7 @@ class KotlinMetadataTargetConfigurator(kotlinPluginVersion: String) :
     private fun createMetadataCompilationsForCommonSourceSets(
         target: KotlinMetadataTarget,
         allMetadataJar: Jar
-    ) = target.project.whenEvaluated {
+    ) = target.project.whenEvaluatedAndVariantsConfigured {
         // Do this after all targets are configured by the user build script
 
         val publishedCommonSourceSets: Set<KotlinSourceSet> = getPublishedCommonSourceSets(project)

@@ -56,7 +56,7 @@ open class KotlinNativeTarget @Inject constructor(
         // NB: another usage context for the host-specific metadata may be added to this set below
         val mutableUsageContexts = createUsageContexts(mainCompilation).toMutableSet()
 
-        project.whenEvaluated {
+        project.whenEvaluatedAndVariantsConfigured {
             val hostSpecificSourceSets = getHostSpecificSourceSets(project)
                 .intersect(mainCompilation.allKotlinSourceSets)
 

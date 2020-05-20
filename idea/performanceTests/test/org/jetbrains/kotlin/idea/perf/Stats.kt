@@ -367,20 +367,22 @@ class Stats(
         }
 
         fun printTestStarted(testName: String) {
-            logMessage { "teamcity[testStarted name='$testName']" }
+            logMessage { "testStarted name='$testName'" }
             tcMessage { "testStarted name='$testName'" }
         }
 
         fun printStatValue(name: String, value: Any) {
+            logMessage { "buildStatisticValue key='$name' value='$value'" }
             tcMessage { "buildStatisticValue key='$name' value='$value'" }
         }
 
         fun printTestMetadata(testName: String, name: String, value: Number) {
+            logMessage { "testMetadata testName='$testName' name='$name' type='number' value='$value'" }
             tcMessage { "testMetadata testName='$testName' name='$name' type='number' value='$value'" }
         }
 
         private fun printTestFinished(testName: String) {
-            logMessage { "teamcity[testFinished name='$testName']" }
+            logMessage { "testFinished name='$testName'" }
             tcMessage { "testFinished name='$testName'" }
         }
 
@@ -388,7 +390,7 @@ class Stats(
             if (includeStatValue) {
                 printStatValue(testName, spentMs)
             }
-            logMessage { "teamcity[testFinished name='$testName' duration='$spentMs']" }
+            logMessage { "testFinished name='$testName' duration='$spentMs'" }
             tcMessage { "testFinished name='$testName' duration='$spentMs'" }
         }
 

@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.idea.perf
 
 import com.intellij.openapi.module.impl.ProjectLoadingErrorsHeadlessNotifier
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.printStatValue
+import org.jetbrains.kotlin.idea.perf.Stats.Companion.printTestMetadata
 import org.jetbrains.kotlin.idea.perf.Stats.Companion.tcSuite
 import org.jetbrains.kotlin.idea.testFramework.ProjectOpenAction
 import org.jetbrains.kotlin.idea.testFramework.logMessage
@@ -71,7 +72,7 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         printStatValue("$suiteName: number of kt files", ktFiles.size)
                         val sortedBySize = ktFiles
                             .filter { it.length() > 0 }
-                            .map { it.path to it.length() }.sortedBy { it.second }
+                            .map { it to it.length() }.sortedBy { it.second }
                         val tenPercentOfFiles = sortedBySize.size / 10
 
                         val top10Files = sortedBySize.take(tenPercentOfFiles).map { it.first }
@@ -82,7 +83,14 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                         val topMidLastFiles = LinkedHashSet(top10Files + mid10Files + last10Files)
                         printStatValue("$suiteName: limited number of kt files", topMidLastFiles.size)
 
-                        topMidLastFiles.forEach { path ->
+                        topMidLastFiles.forEach { file ->
+                            val path = file.path
+                            val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
+                            printTestMetadata("$suiteName: $localPath", "fileSize", file.length())
+                        }
+
+                        topMidLastFiles.forEach { file ->
+                            val path = file.path
                             val localPath = path.substring(path.indexOf(projectPath) + projectPath.length + 1)
                             try {
                                 // 1x3 it not good enough for statistics, but at least it gives some overview
@@ -92,7 +100,8 @@ class HighlightWholeProjectPerformanceTest : AbstractPerformanceProjectsTest() {
                                     stats = stat,
                                     warmUpIterations = 1,
                                     iterations = 3,
-                                    checkStability = false
+                                    checkStability = false,
+                                    filenameSimplifier = { it }
                                 )
                             } catch (e: Throwable) {
                                 // nothing as it is already caught by perfTest

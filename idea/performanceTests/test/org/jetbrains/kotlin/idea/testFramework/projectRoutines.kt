@@ -107,7 +107,7 @@ fun replaceWithCustomHighlighter(parentDisposable: Disposable, fromImplementatio
 }
 
 inline fun gradleMessage(block: () -> String) {
-    println("#gradle ${block()}")
+    print("#gradle ${block()}")
 }
 
 inline fun logMessage(message: () -> String) {

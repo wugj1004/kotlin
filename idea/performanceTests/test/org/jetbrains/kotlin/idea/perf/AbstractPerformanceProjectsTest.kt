@@ -699,7 +699,8 @@ abstract class AbstractPerformanceProjectsTest : UsefulTestCase() {
         note: String = "",
         warmUpIterations: Int = 3,
         iterations: Int = 10,
-        checkStability: Boolean = true
+        checkStability: Boolean = true,
+        filenameSimplifier: (String) -> String = ::simpleFilename
     ): List<HighlightInfo> {
         val profileManager = ProjectInspectionProfileManager.getInstance(project)
         val currentProfile = profileManager.currentProfile
@@ -711,7 +712,7 @@ abstract class AbstractPerformanceProjectsTest : UsefulTestCase() {
                 val isWarmUp = note == WARM_UP
                 var highlightInfos: List<HighlightInfo> = emptyList()
                 performanceTest<EditorFile, List<HighlightInfo>> {
-                    name("highlighting ${notePrefix(note)}${simpleFilename(fileName)}")
+                    name("highlighting ${notePrefix(note)}${filenameSimplifier(fileName)}")
                     stats(stats)
                     warmUpIterations(if (isWarmUp) 1 else warmUpIterations)
                     iterations(if (isWarmUp) 2 else iterations)
